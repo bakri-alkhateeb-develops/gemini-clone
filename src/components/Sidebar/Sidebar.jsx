@@ -1,9 +1,18 @@
 import React, { useState } from "react";
 import "./Sidebar.css";
 import { assets } from "../../assets/assets";
+import { ChatContext } from "../../context/ChatContext";
 
 const Sidebar = () => {
   const [isExtended, setIsExtended] = useState(false);
+
+  const { onSend, previousPrompts, setRecentPrompt, newChat } =
+    React.useContext(ChatContext);
+
+  const loadPrompt = async (prompt) => {
+    setRecentPrompt(prompt);
+    await onSend(prompt);
+  };
 
   function handleMenuClick() {
     setIsExtended(!isExtended);
@@ -18,7 +27,7 @@ const Sidebar = () => {
           className="menu"
           onClick={handleMenuClick}
         />
-        <div className="new-chat">
+        <div className="new-chat" onClick={newChat}>
           <img src={assets.plus_icon} alt="Add Icon" />
           {isExtended && <p>New Chat</p>}
         </div>
@@ -26,10 +35,16 @@ const Sidebar = () => {
         {isExtended && (
           <div className="recent">
             <p className="recent-title">Recent</p>
-            <div className="recent-entry">
-              <img src={assets.message_icon} alt="Message Icon" />
-              <p>What is react ....</p>
-            </div>
+            {previousPrompts.map((prompt, index) => (
+              <div
+                className="recent-entry"
+                onClick={() => loadPrompt(prompt)}
+                key={index}
+              >
+                <img src={assets.message_icon} alt="Message Icon" />
+                <p>{prompt.slice(0, 18)}...</p>
+              </div>
+            ))}
           </div>
         )}
       </div>

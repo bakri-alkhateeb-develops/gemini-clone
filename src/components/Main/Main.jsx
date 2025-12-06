@@ -1,8 +1,19 @@
 import React from "react";
 import { assets } from "../../assets/assets";
 import "./Main.css";
+import { ChatContext } from "../../context/ChatContext";
 
 const Main = () => {
+  const {
+    onSend,
+    recentPrompt,
+    showResult,
+    isLoading,
+    resultData,
+    setInput,
+    input,
+  } = React.useContext(ChatContext);
+
   return (
     <div className="main">
       <div className="nav">
@@ -11,51 +22,84 @@ const Main = () => {
       </div>
 
       <div className="main-container">
-        <div className="greet">
-          <p>
-            <span>Hello, Beek.</span>
-          </p>
-          <p>How can I help you today?</p>
-        </div>
+        {!showResult && (
+          <>
+            <div className="greet">
+              <p>
+                <span>Hello, Beek.</span>
+              </p>
+              <p>How can I help you today?</p>
+            </div>
 
-        <div className="cards">
-          <div className="card">
-            <p>
-              Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet.Lorem ipsum
-              dolor sit amet.Lorem ipsum dolor sit amet.
-            </p>
-            <img src={assets.compass_icon} alt="compass-icon" />
+            <div className="cards">
+              <div className="card">
+                <p>
+                  Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet.Lorem
+                  ipsum dolor sit amet.Lorem ipsum dolor sit amet.
+                </p>
+                <img src={assets.compass_icon} alt="compass-icon" />
+              </div>
+              <div className="card">
+                <p>
+                  Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet.Lorem
+                  ipsum dolor sit amet.Lorem ipsum dolor sit amet.
+                </p>
+                <img src={assets.bulb_icon} alt="bulb-icon" />
+              </div>
+              <div className="card">
+                <p>
+                  Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet.Lorem
+                  ipsum dolor sit amet.Lorem ipsum dolor sit amet.
+                </p>
+                <img src={assets.message_icon} alt="message-icon" />
+              </div>
+              <div className="card">
+                <p>
+                  Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet.Lorem
+                  ipsum dolor sit amet.Lorem ipsum dolor sit amet.
+                </p>
+                <img src={assets.code_icon} alt="code-icon" />
+              </div>
+            </div>
+          </>
+        )}
+
+        {showResult && (
+          <div className="result">
+            <div className="result-title">
+              <img src={assets.user_icon} alt="user-icon" />
+              <p>{recentPrompt}</p>
+            </div>
+
+            <div className="result-data">
+              <img src={assets.gemini_icon} alt="gemini-icon" />
+              {isLoading ? (
+                <div className="loader">
+                  <hr />
+                  <hr />
+                  <hr />
+                </div>
+              ) : (
+                <p dangerouslySetInnerHTML={{ __html: resultData }}></p>
+              )}
+            </div>
           </div>
-          <div className="card">
-            <p>
-              Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet.Lorem ipsum
-              dolor sit amet.Lorem ipsum dolor sit amet.
-            </p>
-            <img src={assets.bulb_icon} alt="bulb-icon" />
-          </div>
-          <div className="card">
-            <p>
-              Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet.Lorem ipsum
-              dolor sit amet.Lorem ipsum dolor sit amet.
-            </p>
-            <img src={assets.message_icon} alt="message-icon" />
-          </div>
-          <div className="card">
-            <p>
-              Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet.Lorem ipsum
-              dolor sit amet.Lorem ipsum dolor sit amet.
-            </p>
-            <img src={assets.code_icon} alt="code-icon" />
-          </div>
-        </div>
+        )}
 
         <div className="main-bottom">
           <div className="search-box">
-            <input type="text" placeholder="Enter a prompt here" />
+            <input
+              onChange={(e) => setInput(e.target.value)}
+              value={input}
+              type="text"
+              placeholder="Enter a prompt here"
+            />
             <div>
               <img src={assets.gallery_icon} alt="gallery" />
               <img src={assets.mic_icon} alt="mic" />
-              <img src={assets.send_icon} alt="send" />
+              {input && (
+                <img onClick={onSend} src={assets.send_icon} alt="send" />
+              )}
             </div>
           </div>
 
